@@ -39,22 +39,43 @@ async function main() {
   await mongoose.connect(DB_URL+DB_NAME);
 }
 
-app.post('/user', asyncwrap (async (req, res)=>{
+app.post('/user/register', asyncwrap (async (req, res)=>{
     let { obj } = req.body;
     let r = await User.insertOne(obj)
     console.log(obj)
-    res.render('welcome.ejs', {obj})
+
+    if(!obj){
+        res.render('loginDir.ejs')
+    }else{
+        res.render('loginViaRegister.ejs', {obj})
+    }
     // let r = await User.deleteMany({})
     // res.send(r)
 }))
 
-
+app.post('/user', asyncwrap(async (req, res)=>{
+    let {obj}= req.body
+    console.log(obj)
+    let user = await User.findOne({
+        username: obj.username,
+        password: obj.password
+    })
+    if(user){
+        res.render('welcome.ejs', {user})
+    } else{
+        res.send("Incorrenct Username or Password!")
+    }
+}))
 
 app.get('/', (req, res)=>{
     console.log("Root route working ✅")
 })
 
-app.get('/user/new', (req, res)=>{
+app.get('/user/register', (req, res)=>{
     res.render('new.ejs')
+})
+
+app.use((err, req, res, next)=>{
+    console.log(err._message)
 })
 

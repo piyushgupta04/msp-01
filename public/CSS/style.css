@@ -17,3 +17,9 @@ body{
 .form-control{
     border-color: #abc8c09c;
 }
+
+#main .container {
+    min-height: 100vh;
+    max-width: 80vh;
+}
+
